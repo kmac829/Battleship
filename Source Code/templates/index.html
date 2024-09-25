@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Battleship</title>
+    <style>
+        *{
+            box-sizing: border-box;
+        }
+
+        th, td {
+            width: 20px;
+            height: 20px;
+            border: thin solid black;
+        } 
+        td {
+            background-color: aqua;
+        }
+        td.miss {
+            background-color: blue;
+        }
+        td.miss::after {
+            content: "O";
+        }
+        td.ship {
+            background-color: gray;
+        }
+        td.hit {
+            background-color: red;
+        }
+        td.hit::after {
+            content: "X";
+        }
+        td.invalid{
+            background-color: orange;
+        }
+        td.target{
+            background-color: green;
+        }
+        table {
+             border: thick solid black;
+        }
+        .loggedIn #loginPane{
+            display: none;
+        }
+        #gamePane{
+            display: none;
+        }
+        .loggedIn #gamePane{
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div id="loginPane">
+        <div>
+            <label for="username">Username: </label>
+            <input type="text" id="username" placeholder="username">
+        </div>
+        <div>
+            <button id="loginButton">Login</button>
+            <button id="createButton">Create</button>
+        </div>
+    </div>
+    <div id="gamePane">
+        <div>
+            Player: <span id="playerName"></span>
+        </div>
+        <div id="gameButton">
+            <button id="startGame">Start</button>
+        </div>
+        <div id="winText">
+
+        </div>
+        <table id="opponentBoard">
+            <thead>
+                <tr>
+                    <th colspan="11">Opponent</th>
+                </tr>
+                <tr>
+                    <th>X</th>
+                    <th>A</th>
+                    <th>B</th> 
+                    <th>C</th>
+                    <th>D</th>
+                    <th>E</th>
+                    <th>F</th>
+                    <th>G</th>
+                    <th>H</th>
+                    <th>I</th>
+                    <th>J</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th>0</th>
+                    <td id="oA0"></td>
+                    <td id="oB0"></td>
+                    <td id="oC0"></td>
+                    <td id="oD0"></td>
+                    <td id="oE0"></td>
+                    <td id="oF0"></td>
+                    <td id="oG0"></td>
+                    <td id="oH0"></td>
+                    <td id="oI0"></td>
+                    <td id="oJ0"></td>
+                </tr>
+                <tr>
+                    <th>1</th>
+                    <td id="oA1"></td>
+                    <td id="oB1"></td>
+                    <td id="oC1"></td>
+                    <td id="oD1"></td>
+                    <td id="oE1"></td>
+                    <td id="oF1"></td>
+                    <td id="oG1"></td>
+                    <td id="oH1"></td>
+                    <td id="oI1"></td>
+                    <td id="oJ1"></td>
+                </tr>
+                <tr>
+                    <th>2</th>
+                    <td id="oA2"></td>
+                    <td id="oB2"></td>
+                    <td id="oC2"></td>
+                    <td id="oD2"></td>
+                    <td id="oE2"></td>
+                    <td id="oF2"></td>
+                    <td id="oG2"></td>
+                    <td id="oH2"></td>
+                    <td id="oI2"></td>
+                    <td id="oJ2"></td>
+                </tr>
+                <tr>
+                    <th>3</th>
+                    <td id="oA3"></td>
+                    <td id="oB3"></td>
+                    <td id="oC3"></td>
+                    <td id="oD3"></td>
+                    <td id="oE3"></td>
+                    <td id="oF3"></td>
+                    <td id="oG3"></td>
+                    <td id="oH3"></td>
+                    <td id="oI3"></td>
+                    <td id="oJ3"></td>
+                </tr>
+                <tr>
+                    <th>4</th>
+                    <td id="oA4"></td>
+                    <td id="oB4"></td>
+                    <td id="oC4"></td>
+                    <td id="oD4"></td>
+                    <td id="oE4"></td>
+                    <td id="oF4"></td>
+                    <td id="oG4"></td>
+                    <td id="oH4"></td>
+                    <td id="oI4"></td>
+                    <td id="oJ4"></td>
+                </tr>
+                <tr>
+                    <th>5</th>
+                    <td id="oA5"></td>
+                    <td id="oB5"></td>
+                    <td id="oC5"></td>
+                    <td id="oD5"></td>
+                    <td id="oE5"></td>
+                    <td id="oF5"></td>
+                    <td id="oG5"></td>
+                    <td id="oH5"></td>
+                    <td id="oI5"></td>
+                    <td id="oJ5"></td>
+                </tr>
+                <tr>
+                    <th>6</th>
+                    <td id="oA6"></td>
+                    <td id="oB6"></td>
+                    <td id="oC6"></td>
+                    <td id="oD6"></td>
+                    <td id="oE6"></td>
+                    <td id="oF6"></td>
+                    <td id="oG6"></td>
+                    <td id="oH6"></td>
+                    <td id="oI6"></td>
+                    <td id="oJ6"></td>
+                </tr>
+                <tr>
+                    <th>7</th>
+                    <td id="oA7"></td>
+                    <td id="oB7"></td>
+                    <td id="oC7"></td>
+                    <td id="oD7"></td>
+                    <td id="oE7"></td>
+                    <td id="oF7"></td>
+                    <td id="oG7"></td>
+                    <td id="oH7"></td>
+                    <td id="oI7"></td>
+                    <td id="oJ7"></td>
+                </tr>
+                <tr>
+                    <th>8</th>
+                    <td id="oA8"></td>
+                    <td id="oB8"></td>
+                    <td id="oC8"></td>
+                    <td id="oD8"></td>
+                    <td id="oE8"></td>
+                    <td id="oF8"></td>
+                    <td id="oG8"></td>
+                    <td id="oH8"></td>
+                    <td id="oI8"></td>
+                    <td id="oJ8"></td>
+                </tr>
+                <tr>
+                    <th>9</th>
+                    <td id="oA9"></td>
+                    <td id="oB9"></td>
+                    <td id="oC9"></td>
+                    <td id="oD9"></td>
+                    <td id="oE9"></td>
+                    <td id="oF9"></td>
+                    <td id="oG9"></td>
+                    <td id="oH9"></td>
+                    <td id="oI9"></td>
+                    <td id="oJ9"></td>
+                </tr>
+            </tbody>
+        </table>
+        <table id="playerBoard">
+            <thead>
+                <tr>
+                    <th colspan="11">Player</th>
+                </tr>
+                <tr>
+                    <th>X</th>
+                    <th>A</th>
+                    <th>B</th> 
+                    <th>C</th>
+                    <th>D</th>
+                    <th>E</th>
+                    <th>F</th>
+                    <th>G</th>
+                    <th>H</th>
+                    <th>I</th>
+                    <th>J</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th>0</th>
+                    <td id="pA0"></td>
+                    <td id="pB0"></td>
+                    <td id="pC0"></td>
+                    <td id="pD0"></td>
+                    <td id="pE0"></td>
+                    <td id="pF0"></td>
+                    <td id="pG0"></td>
+                    <td id="pH0"></td>
+                    <td id="pI0"></td>
+                    <td id="pJ0"></td>
+                </tr>
+                <tr>
+                    <th>1</th>
+                    <td id="pA1"></td>
+                    <td id="pB1"></td>
+                    <td id="pC1"></td>
+                    <td id="pD1"></td>
+                    <td id="pE1"></td>
+                    <td id="pF1"></td>
+                    <td id="pG1"></td>
+                    <td id="pH1"></td>
+                    <td id="pI1"></td>
+                    <td id="pJ1"></td>
+                </tr>
+                <tr>
+                    <th>2</th>
+                    <td id="pA2"></td>
+                    <td id="pB2"></td>
+                    <td id="pC2"></td>
+                    <td id="pD2"></td>
+                    <td id="pE2"></td>
+                    <td id="pF2"></td>
+                    <td id="pG2"></td>
+                    <td id="pH2"></td>
+                    <td id="pI2"></td>
+                    <td id="pJ2"></td>
+                </tr>
+                <tr>
+                    <th>3</th>
+                    <td id="pA3"></td>
+                    <td id="pB3"></td>
+                    <td id="pC3"></td>
+                    <td id="pD3"></td>
+                    <td id="pE3"></td>
+                    <td id="pF3"></td>
+                    <td id="pG3"></td>
+                    <td id="pH3"></td>
+                    <td id="pI3"></td>
+                    <td id="pJ3"></td>
+                </tr>
+                <tr>
+                    <th>4</th>
+                    <td id="pA4"></td>
+                    <td id="pB4"></td>
+                    <td id="pC4"></td>
+                    <td id="pD4"></td>
+                    <td id="pE4"></td>
+                    <td id="pF4"></td>
+                    <td id="pG4"></td>
+                    <td id="pH4"></td>
+                    <td id="pI4"></td>
+                    <td id="pJ4"></td>
+                </tr>
+                <tr>
+                    <th>5</th>
+                    <td id="pA5"></td>
+                    <td id="pB5"></td>
+                    <td id="pC5"></td>
+                    <td id="pD5"></td>
+                    <td id="pE5"></td>
+                    <td id="pF5"></td>
+                    <td id="pG5"></td>
+                    <td id="pH5"></td>
+                    <td id="pI5"></td>
+                    <td id="pJ5"></td>
+                </tr>
+                <tr>
+                    <th>6</th>
+                    <td id="pA6"></td>
+                    <td id="pB6"></td>
+                    <td id="pC6"></td>
+                    <td id="pD6"></td>
+                    <td id="pE6"></td>
+                    <td id="pF6"></td>
+                    <td id="pG6"></td>
+                    <td id="pH6"></td>
+                    <td id="pI6"></td>
+                    <td id="pJ6"></td>
+                </tr>
+                <tr>
+                    <th>7</th>
+                    <td id="pA7"></td>
+                    <td id="pB7"></td>
+                    <td id="pC7"></td>
+                    <td id="pD7"></td>
+                    <td id="pE7"></td>
+                    <td id="pF7"></td>
+                    <td id="pG7"></td>
+                    <td id="pH7"></td>
+                    <td id="pI7"></td>
+                    <td id="pJ7"></td>
+                </tr>
+                <tr>
+                    <th>8</th>
+                    <td id="pA8"></td>
+                    <td id="pB8"></td>
+                    <td id="pC8"></td>
+                    <td id="pD8"></td>
+                    <td id="pE8"></td>
+                    <td id="pF8"></td>
+                    <td id="pG8"></td>
+                    <td id="pH8"></td>
+                    <td id="pI8"></td>
+                    <td id="pJ8"></td>
+                </tr>
+                <tr>
+                    <th>9</th>
+                    <td id="pA9"></td>
+                    <td id="pB9"></td>
+                    <td id="pC9"></td>
+                    <td id="pD9"></td>
+                    <td id="pE9"></td>
+                    <td id="pF9"></td>
+                    <td id="pG9"></td>
+                    <td id="pH9"></td>
+                    <td id="pI9"></td>
+                    <td id="pJ9"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+    <script>
+        const columns = "ABCDEFGHIJ"
+        const playerBoard = document.getElementById("playerBoard")
+        const opponentBoard = document.getElementById("opponentBoard")
+        let gameId = -1
+        let playerId = -1
+        let ships = [5,4,3,3,2]
+        let direction = 1
+        let shipIndex = 0
+        let error = false
+        let lastCell = null
+        let grid = Array.from({length:10}, ()=> new Array(10).fill(0))
+        let playGrid = Array.from({length:10}, ()=> new Array(10).fill(0))
+        let gameState = "PREGAME"
+        
+        document.getElementById("createButton").addEventListener("click", async _=>{
+            const response = await fetch("/api/createuser",{
+                method:"POST",
+                headers:{
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    username: document.getElementById("username").value
+                })
+            })
+
+            const json = await response.json()
+            playerId = json.id
+            document.getElementById("playerName").innerText = json.username
+            document.body.className = "loggedIn"
+        })
+        document.getElementById("loginButton").addEventListener("click",async _=>{
+            const response = await fetch("/api/login",{
+                method:"POST",
+                headers:{
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    username: document.getElementById("username").value
+                })
+            })
+
+            const json = await response.json()
+            document.getElementById("playerName").innerText = json.username
+            playerId = json.id
+            document.body.className = "loggedIn"
+        })
+        document.getElementById("startGame").addEventListener("click", async _ =>{
+            const startGame = await fetch("/api/startgame", {
+                method: "POST",
+                headers:{
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    user_id: playerId 
+                })
+            })
+            const startJson = await startGame.json()
+            gameId = startJson.id
+            document.getElementById("winText").innerText = "Place Your Ships"
+            grid = Array.from({length:10}, ()=> new Array(10).fill(0))
+            playGrid = Array.from({length:10}, ()=> new Array(10).fill(0))
+            gameState = "SETUP"
+            shipIndex = 0
+            for (let cell of document.getElementsByTagName("td")) {
+                cell.className = ""
+            }
+        })
+
+        function setShipCell(cell) {
+            let row = parseInt(cell[2])
+            let column = columns.indexOf(cell[1])
+            error = false
+            if (direction === 0){
+                column = Math.min(column,10-ships[shipIndex])
+                for (let i=0; i<ships[shipIndex]; i++){
+                    document.getElementById(`p${columns.charAt(column+i)}${row}`).className = grid[row][column+i]>0? "hit" :"ship"
+                    error = error || grid[row][column+i]
+                }
+                return
+            }
+            row = Math.min(row,10-ships[shipIndex])
+            for (let i=0; i<ships[shipIndex]; i++){
+                document.getElementById(`p${columns.charAt(column)}${row+i}`).className = grid[row+i][column]>0? "hit" :"ship"
+                error = error || grid[row+i][column]
+            }
+        }
+        function sendShipPlacement(cell) {
+            let row = parseInt(cell[2])
+            let column = columns.indexOf(cell[1])
+            if (direction === 0){
+                column = Math.min(column,10-ships[shipIndex])
+                let placement = []
+                for (let i=0; i<ships[shipIndex]; i++){
+                    placement.push(`${row},${column+i}`)
+                    grid[row][column+i] = ships[shipIndex]
+                }
+                fetch("/api/shipplacement", {
+                    method: "POST",
+                    headers:{
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        game_id: gameId,
+                        size: ships[shipIndex],
+                        placement: placement.join("|")
+                    })
+                })
+                shipIndex++
+                if (shipIndex >= ships.length){
+                    // start game
+                    gameState = "PLAY"
+                    document.getElementById("winText").innerText = "Sink the opponents battleship!"
+                }
+                return
+            }
+            row = Math.min(row,10-ships[shipIndex])
+            let placement = []
+            for (let i=0; i<ships[shipIndex]; i++){
+                placement.push(`${row+i},${column}`)
+                grid[row+i][column] = ships[shipIndex]
+            }
+            fetch("/api/shipplacement", {
+                method: "POST",
+                headers:{
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    game_id: gameId,
+                    size: ships[shipIndex],
+                    placement: placement.join("|")
+                })
+            })
+            shipIndex++
+            if (shipIndex >= ships.length){
+                // start game
+                gameState = "PLAY"
+                document.getElementById("winText").innerText = "Sink the opponents battleship!"
+            }
+        }
+        function clearShipCell(cell){
+            let row = parseInt(cell[2])
+            let column = columns.indexOf(cell[1])
+            if (direction === 0){
+                column = Math.min(column,10-ships[shipIndex])
+                for (let i=0; i<ships[shipIndex]; i++){
+                    document.getElementById(`p${columns.charAt(column+i)}${row}`).className = grid[row][column+i] === 0 ? "" : "ship"
+                }
+                return
+            }
+            row = Math.min(row,10-ships[shipIndex])
+            for (let i=0; i<ships[shipIndex]; i++){
+                document.getElementById(`p${columns.charAt(column)}${row+i}`).className = grid[row+i][column] === 0 ? "" : "ship"
+            }
+        }
+        window.oncontextmenu = () => {
+            if (lastCell) clearShipCell(lastCell)
+            direction = (direction + 1) % 2
+            if (lastCell) setShipCell(lastCell)
+            return false
+        }
+        
+        for (let cell of playerBoard.getElementsByTagName("td")) {
+            cell.addEventListener("mouseover", event => {
+                if (gameState !== "SETUP") return;
+
+                setShipCell(cell.id)
+                lastCell = cell.id
+            })
+            cell.addEventListener("mouseout", event => {
+                if (gameState !== "SETUP") return;
+
+                clearShipCell(cell.id)
+                lastCell = null
+            })
+            cell.addEventListener("click", event => {
+                if (gameState !== "SETUP") return;
+
+                sendShipPlacement(cell.id)
+                lastCell = null
+            })
+        }
+        for (let cell of opponentBoard.getElementsByTagName("td")) {
+            cell.addEventListener("mouseover", event => {
+                if (gameState !== "PLAY") return;
+                let row = parseInt(cell.id[2])
+                let column = columns.indexOf(cell.id[1])
+                cell.className = "target"
+                switch(playGrid[row][column]){
+                    case 1: //miss
+                    case 2: //hit
+                        cell.className = "invalid"
+                        break
+                }
+                lastCell = cell.id
+            })
+            cell.addEventListener("mouseout", event => {
+                if (gameState !== "PLAY") return;
+                let row = parseInt(cell.id[2])
+                let column = columns.indexOf(cell.id[1])
+                cell.className = ""
+                switch(playGrid[row][column]){
+                    case 1: //miss
+                        cell.className = "miss"
+                        break
+                    case 2: //hit
+                        cell.className = "hit"
+                        break
+                }
+                lastCell = null
+            })
+            cell.addEventListener("click", event => {
+                if (gameState !== "PLAY") return;
+                let row = parseInt(cell.id[2])
+                let column = columns.indexOf(cell.id[1])
+                
+                if (playGrid[row][column]) {
+                    return;
+                }
+                fetch("/api/makemove", {
+                    method: "POST",
+                    headers:{
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        game_id: gameId,
+                        row,
+                        column
+                    })
+                }).then(async response => {
+                    /*
+                    return {
+        "player":{
+            "id":player_move.id,
+            "game_id": player_move.game_id,
+            "row": player_move.row,
+            "column": player_move.column,
+            "is_hit": player_move.is_hit,
+            "is_player": player_move.is_player
+        },
+        "ai":{
+            "id":ai_move.id,
+            "game_id": ai_move.game_id,
+            "row": ai_move.row,
+            "column": ai_move.column,
+            "is_hit": ai_move.is_hit,
+            "is_player": ai_move.is_player
+        },
+        "has_player_won": True,
+        "has_ai_won": ai_won
+    }
+    */
+
+                    const json = await response.json()
+                    const opponentCell = document.getElementById(`o${columns.charAt(json.player.column)}${json.player.row}`)
+                    
+                    opponentCell.className = json.player.is_hit ? "hit": "miss"
+                    playGrid[json.player.row][json.player.column] = json.player.is_hit ? 2:1
+
+                    if (json.has_player_won){
+                        gameState = "PLAYER WON"
+                        document.getElementById("winText").innerText = "YOU WON!!!!"
+                        return;
+                    }
+                    const playerCell = document.getElementById(`p${columns.charAt(json.ai.column)}${json.ai.row}`)
+                    playerCell.className = json.ai.is_hit ? "hit": (grid[json.ai.row][json.ai.column] > 0 ? "ship" : "miss")
+                    if (json.has_ai_won){
+                        gameState = "AI WON"
+                        document.getElementById("winText").innerText = "You Have Lost!"
+                        return;
+                    }
+                })
+                lastCell = null
+            })
+        }
+
+    </script>
+</body>
+</html>
